@@ -13,9 +13,7 @@ import (
 	"time"
 )
 
-var (
-	version = "1.0"
-)
+var version = "master"
 
 type request struct {
 	command   string

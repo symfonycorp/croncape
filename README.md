@@ -34,11 +34,6 @@ That's it!
 Note that the `MAILTO` environment variable can also be defined globally in
 `/etc/crontab`; it supports multiple recipients by separating them with a comma.
 
-Alternatively, you can also the `-e` flag to define emails:
-
-    0 6 * * * croncape -e "sysadmins@example.com" ls -lsa
-    0 6 * * * croncape -e "sysadmins@example.com,sys@foo.org" ls -lsa
-
 Besides sending emails, croncape can also kill the run command after a given
 timeout, via the `-t` flag (disabled by default):
 
@@ -59,7 +54,8 @@ Croncape is very similar to [cronwrap][2], with some differences:
  * Tries to use `sendmail` or `mail` depending on availability (cronwrap only
    works with `sendmail`);
 
- * Reads the email from the standard crontab `MAILTO` environment variable.
+ * Reads the email from the standard crontab `MAILTO` environment variable
+   instead of a `-e` flag.
 
 For a simpler alternative, have a look at [cronic][3].
 

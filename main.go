@@ -39,9 +39,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	req := request{}
+	req := request{
+		emails: os.Getenv("MAILTO"),
+	}
 
-	flag.StringVar(&req.emails, "e", "", `Emails to send reports when the command fails or exceeds timeout, like '-e "john@example.com,doe@example.com"'`)
 	flag.DurationVar(&req.timeout, "t", 0, `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, disabled by default`)
 	flag.StringVar(&req.transport, "p", "auto", `Transport to use, like "-p auto", "-p mail", "-p sendmail"`)
 	flag.BoolVar(&req.verbose, "v", false, "Enable sending emails even if command is successful")
@@ -51,10 +52,6 @@ func main() {
 	if len(req.command) == 0 {
 		fmt.Println("You must pass a command to execute")
 		os.Exit(1)
-	}
-
-	if req.emails == "" && os.Getenv("MAILTO") != "" {
-		req.emails = os.Getenv("MAILTO")
 	}
 
 	r := execCmd(wd, req)

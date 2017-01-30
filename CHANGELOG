@@ -1,10 +1,11 @@
 1.1.0
 -----
 
+ * remove the -e flag (use the MAILTO environment variable instead)
  * added support for MAILTO as the preferred way to configure croncape
  * disabled the timeout by default
  * added a way to disable the timeout
- * removed the -c flag
+ * removed the -c flag (pass the command directly)
  * fixed environment variables handling
 
 1.0.0

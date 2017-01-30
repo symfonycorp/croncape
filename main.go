@@ -39,20 +39,14 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	command := flag.String("c", "", `Command to run, like '-c "ls"'`)
-	emails := flag.String("e", "", `Emails to send reports when the command fails or exceeds timeout, like '-e "john@example.com,doe@example.com"'`)
-	timeout := flag.Duration("t", 1*time.Hour, `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, defaults to 1 hour "-t 3600"`)
-	transport := flag.String("p", "auto", `Transport to use, like "-p auto", "-p mail", "-p sendmail"`)
-	verbose := flag.Bool("v", false, "Enable sending emails even if command is successful")
-	flag.Parse()
+	req := request{}
 
-	req := request{
-		command:   *command,
-		emails:    *emails,
-		timeout:   *timeout,
-		transport: *transport,
-		verbose:   *verbose,
-	}
+	flag.StringVar(&req.command, "c", "", `Command to run, like '-c "ls"'`)
+	flag.StringVar(&req.emails, "e", "", `Emails to send reports when the command fails or exceeds timeout, like '-e "john@example.com,doe@example.com"'`)
+	flag.DurationVar(&req.timeout, "t", 1*time.Hour, `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, defaults to 1 hour "-t 3600"`)
+	flag.StringVar(&req.transport, "p", "auto", `Transport to use, like "-p auto", "-p mail", "-p sendmail"`)
+	flag.BoolVar(&req.verbose, "v", false, "Enable sending emails even if command is successful")
+	flag.Parse()
 
 	r := execCmd(wd, req)
 

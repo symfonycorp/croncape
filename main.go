@@ -68,7 +68,7 @@ func execCmd(path string, req request) result {
 	cmd.Dir = path
 	cmd.Stdout = &r.stdout
 	cmd.Stderr = &r.stderr
-	cmd.Env = []string{fmt.Sprintf("HOME=%s", os.Getenv("HOME"))}
+	cmd.Env = os.Environ()
 	if err := cmd.Start(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -138,7 +138,7 @@ func (r *result) sendEmail() {
 		for _, email := range emails {
 			cmd := exec.Command(transportPath, "-s", r.subject(), strings.TrimSpace(email))
 			cmd.Stdin = r.render()
-			cmd.Env = []string{fmt.Sprintf("HOME=%s", os.Getenv("HOME"))}
+			cmd.Env = os.Environ()
 			if err := cmd.Run(); err != nil {
 				fmt.Printf("Could not send email to %s: %s\n", email, err)
 				os.Exit(1)
@@ -151,7 +151,7 @@ func (r *result) sendEmail() {
 		message := fmt.Sprintf("To: %s\r\nCc: %s\r\nSubject: %s\r\n\r\n%s", emails[0], strings.Join(emails[1:], ","), r.subject(), r.render().String())
 		cmd := exec.Command(transportPath, "-t")
 		cmd.Stdin = strings.NewReader(message)
-		cmd.Env = []string{fmt.Sprintf("HOME=%s", os.Getenv("HOME"))}
+		cmd.Env = os.Environ()
 		if err := cmd.Run(); err != nil {
 			fmt.Printf("Could not send email to %s: %s\n", emails, err)
 			os.Exit(1)

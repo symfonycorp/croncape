@@ -148,7 +148,12 @@ func (r *result) sendEmail() {
 	}
 
 	if transportType == "sendmail" {
-		message := fmt.Sprintf("To: %s\r\nCc: %s\r\nSubject: %s\r\n\r\n%s", emails[0], strings.Join(emails[1:], ","), r.subject(), r.render().String())
+		var message string
+		if len(emails) > 1 {
+			message = fmt.Sprintf("To: %s\r\nCc: %s\r\nSubject: %s\r\n\r\n%s", emails[0], strings.Join(emails[1:], ","), r.subject(), r.render().String())
+		} else {
+			message = fmt.Sprintf("To: %s\r\nSubject: %s\r\n\r\n%s", emails[0], r.subject(), r.render().String())
+		}
 		cmd := exec.Command(transportPath, "-t")
 		cmd.Stdin = strings.NewReader(message)
 		cmd.Env = os.Environ()

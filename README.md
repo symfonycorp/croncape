@@ -34,7 +34,8 @@ You can also send emails to more than one user by separating emails with a comma
 
     0 6 * * * croncape -e "sysadmins@example.com,sys@foo.org" ls -lsa
 
-Besides sending emails, croncape can also kill the run command after a given timeout, via the `-t` flag (by default, the limit is 1 hour):
+Besides sending emails, croncape can also kill the run command after a given
+timeout, via the `-t` flag (disabled by default):
 
     0 6 * * * croncape -e "sysadmins@example.com" -t 2h ls -lsa
 

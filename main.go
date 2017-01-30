@@ -42,7 +42,7 @@ func main() {
 	req := request{}
 
 	flag.StringVar(&req.emails, "e", "", `Emails to send reports when the command fails or exceeds timeout, like '-e "john@example.com,doe@example.com"'`)
-	flag.DurationVar(&req.timeout, "t", 1*time.Hour, `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, defaults to 1 hour "-t 3600"`)
+	flag.DurationVar(&req.timeout, "t", 0, `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, disabled by default`)
 	flag.StringVar(&req.transport, "p", "auto", `Transport to use, like "-p auto", "-p mail", "-p sendmail"`)
 	flag.BoolVar(&req.verbose, "v", false, "Enable sending emails even if command is successful")
 	flag.Parse()
@@ -75,19 +75,24 @@ func execCmd(path string, req request) result {
 		os.Exit(1)
 	}
 
-	timer := time.NewTimer(req.timeout)
-	go func(timer *time.Timer, cmd *exec.Cmd) {
-		for _ = range timer.C {
-			r.killed = true
-			if err := cmd.Process.Kill(); err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+	var timer *time.Timer
+	if req.timeout > 0 {
+		timer = time.NewTimer(req.timeout)
+		go func(timer *time.Timer, cmd *exec.Cmd) {
+			for _ = range timer.C {
+				r.killed = true
+				if err := cmd.Process.Kill(); err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 			}
-		}
-	}(timer, cmd)
+		}(timer, cmd)
+	}
 
 	err := cmd.Wait()
-	timer.Stop()
+	if req.timeout > 0 {
+		timer.Stop()
+	}
 	if err != nil {
 		// unsuccessful exit code?
 		if exitError, ok := err.(*exec.ExitError); ok {

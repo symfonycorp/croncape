@@ -42,7 +42,7 @@ don't forget to quote it:
 Besides sending emails, croncape can also kill the run command after a given
 timeout, via the `-t` flag (disabled by default):
 
-    0 6 * * * croncape -e "sysadmins@example.com" -t 2h ls -lsa
+    0 6 * * * croncape -t 2h ls -lsa
 
 If you want to send emails even when commands are successful, use the `-v` flag
 (useful for testing).

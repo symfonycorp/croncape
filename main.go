@@ -48,6 +48,10 @@ func main() {
 	flag.Parse()
 
 	req.command = flag.Args()
+	if len(req.command) == 0 {
+		fmt.Println("You must pass a command to execute")
+		os.Exit(1)
+	}
 
 	if req.emails == "" && os.Getenv("MAILTO") != "" {
 		req.emails = os.Getenv("MAILTO")

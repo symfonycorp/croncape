@@ -41,21 +41,15 @@ func main() {
 
 	command := flag.String("c", "", `Command to run, like '-c "ls"'`)
 	emails := flag.String("e", "", `Emails to send reports when the command fails or exceeds timeout, like '-e "john@example.com,doe@example.com"'`)
-	timeout := flag.String("t", "1h", `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, defaults to 1 hour "-t 3600"`)
+	timeout := flag.Duration("t", 1*time.Hour, `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, defaults to 1 hour "-t 3600"`)
 	transport := flag.String("p", "auto", `Transport to use, like "-p auto", "-p mail", "-p sendmail"`)
 	verbose := flag.Bool("v", false, "Enable sending emails even if command is successful")
 	flag.Parse()
 
-	t, err := time.ParseDuration(*timeout)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
 	req := request{
 		command:   *command,
 		emails:    *emails,
-		timeout:   t,
+		timeout:   *timeout,
 		transport: *transport,
 		verbose:   *verbose,
 	}

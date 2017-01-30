@@ -34,6 +34,11 @@ That's it!
 Note that the `MAILTO` environment variable can also be defined globally in
 `/etc/crontab`; it supports multiple recipients by separating them with a comma.
 
+If you need to use "special" shell characters in your command (like `;` or `|`),
+don't forget to quote it:
+
+    0 6 * * * croncape "ls -lsa | true"
+
 Besides sending emails, croncape can also kill the run command after a given
 timeout, via the `-t` flag (disabled by default):
 

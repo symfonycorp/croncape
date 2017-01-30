@@ -75,35 +75,32 @@ func execCmd(path string, req request) result {
 	cmd.Stderr = &r.stderr
 	cmd.Env = os.Environ()
 	if err := cmd.Start(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	var timer *time.Timer
-	if req.timeout > 0 {
-		timer = time.NewTimer(req.timeout)
-		go func(timer *time.Timer, cmd *exec.Cmd) {
-			for _ = range timer.C {
-				r.killed = true
-				if err := cmd.Process.Kill(); err != nil {
-					fmt.Println(err)
-					os.Exit(1)
+		r.stderr.WriteString("\n" + err.Error() + "\n")
+		r.code = 127
+	} else {
+		var timer *time.Timer
+		if req.timeout > 0 {
+			timer = time.NewTimer(req.timeout)
+			go func(timer *time.Timer, cmd *exec.Cmd) {
+				for _ = range timer.C {
+					r.killed = true
+					if err := cmd.Process.Kill(); err != nil {
+						r.stderr.WriteString(fmt.Sprintf("\nUnabled to kill the process: %s\n", err))
+					}
 				}
-			}
-		}(timer, cmd)
-	}
+			}(timer, cmd)
+		}
 
-	err := cmd.Wait()
-	if req.timeout > 0 {
-		timer.Stop()
-	}
-	if err != nil {
-		// unsuccessful exit code?
-		if exitError, ok := err.(*exec.ExitError); ok {
-			r.code = exitError.Sys().(syscall.WaitStatus).ExitStatus()
-		} else {
-			fmt.Println(err)
-			os.Exit(1)
+		err := cmd.Wait()
+		if req.timeout > 0 {
+			timer.Stop()
+		}
+		if err != nil {
+			// unsuccessful exit code?
+			r.code = -1
+			if exitError, ok := err.(*exec.ExitError); ok {
+				r.code = exitError.Sys().(syscall.WaitStatus).ExitStatus()
+			}
 		}
 	}
 

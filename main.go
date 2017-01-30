@@ -91,7 +91,9 @@ func execCmd(path string, req request) result {
 		}
 	}(timer, cmd)
 
-	if err := cmd.Wait(); err != nil {
+	err := cmd.Wait()
+	timer.Stop()
+	if err != nil {
 		// unsuccessful exit code?
 		if exitError, ok := err.(*exec.ExitError); ok {
 			r.code = exitError.Sys().(syscall.WaitStatus).ExitStatus()

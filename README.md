@@ -24,19 +24,19 @@ Download the [binaries][4] or `go get github.com/sensiocloud/croncape`.
 Usage
 -----
 
-When adding a command in crontab, wrap it with Croncape:
+When adding a command in crontab, prefix it with `croncape`:
 
-    0 6 * * * croncape -e "sysadmins@example.com" -c "ls -lsa"
+    0 6 * * * croncape -e "sysadmins@example.com" ls -lsa
 
 That's it!
 
 You can also send emails to more than one user by separating emails with a comma:
 
-    0 6 * * * croncape -e "sysadmins@example.com,sys@foo.org" -c "ls -lsa"
+    0 6 * * * croncape -e "sysadmins@example.com,sys@foo.org" ls -lsa
 
 Besides sending emails, croncape can also kill the run command after a given timeout, via the `-t` flag (by default, the limit is 1 hour):
 
-    0 6 * * * croncape -e "sysadmins@example.com" -t 2h -c "ls -lsa"
+    0 6 * * * croncape -e "sysadmins@example.com" -t 2h ls -lsa
 
 If you want to send emails even when commands are successful, use the `-v` flag
 (useful for testing).

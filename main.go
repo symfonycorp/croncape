@@ -16,7 +16,7 @@ import (
 var version = "master"
 
 type request struct {
-	command   string
+	command   []string
 	emails    string
 	timeout   time.Duration
 	transport string
@@ -41,12 +41,13 @@ func main() {
 
 	req := request{}
 
-	flag.StringVar(&req.command, "c", "", `Command to run, like '-c "ls"'`)
 	flag.StringVar(&req.emails, "e", "", `Emails to send reports when the command fails or exceeds timeout, like '-e "john@example.com,doe@example.com"'`)
 	flag.DurationVar(&req.timeout, "t", 1*time.Hour, `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, defaults to 1 hour "-t 3600"`)
 	flag.StringVar(&req.transport, "p", "auto", `Transport to use, like "-p auto", "-p mail", "-p sendmail"`)
 	flag.BoolVar(&req.verbose, "v", false, "Enable sending emails even if command is successful")
 	flag.Parse()
+
+	req.command = flag.Args()
 
 	r := execCmd(wd, req)
 
@@ -64,7 +65,7 @@ func execCmd(path string, req request) result {
 		started: time.Now(),
 		request: req,
 	}
-	cmd := exec.Command("sh", "-c", req.command)
+	cmd := exec.Command(req.command[0], req.command[1:]...)
 	cmd.Dir = path
 	cmd.Stdout = &r.stdout
 	cmd.Stderr = &r.stderr
@@ -235,7 +236,7 @@ STANDARD OUTPUT
 		Stdout   string
 	}{
 		Title:    r.title(),
-		Command:  r.request.command,
+		Command:  strings.Join(r.request.command, " "),
 		Started:  r.started,
 		Stopped:  r.stopped,
 		Duration: r.duration(),

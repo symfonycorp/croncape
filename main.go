@@ -49,6 +49,10 @@ func main() {
 
 	req.command = flag.Args()
 
+	if req.emails == "" && os.Getenv("MAILTO") != "" {
+		req.emails = os.Getenv("MAILTO")
+	}
+
 	r := execCmd(wd, req)
 
 	if r.killed || r.code != 0 || r.request.verbose {

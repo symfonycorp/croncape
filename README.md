@@ -26,12 +26,17 @@ Usage
 
 When adding a command in crontab, prefix it with `croncape`:
 
-    0 6 * * * croncape -e "sysadmins@example.com" ls -lsa
+    MAILTO=sysadmins@example.com
+    0 6 * * * croncape ls -lsa
 
 That's it!
 
-You can also send emails to more than one user by separating emails with a comma:
+Note that the `MAILTO` environment variable can also be defined globally in
+`/etc/crontab`; it supports multiple recipients by separating them with a comma.
 
+Alternatively, you can also the `-e` flag to define emails:
+
+    0 6 * * * croncape -e "sysadmins@example.com" ls -lsa
     0 6 * * * croncape -e "sysadmins@example.com,sys@foo.org" ls -lsa
 
 Besides sending emails, croncape can also kill the run command after a given
@@ -52,7 +57,9 @@ Croncape is very similar to [cronwrap][2], with some differences:
    more time to execute);
 
  * Tries to use `sendmail` or `mail` depending on availability (cronwrap only
-   works with `sendmail`).
+   works with `sendmail`);
+
+ * Reads the email from the standard crontab `MAILTO` environment variable.
 
 For a simpler alternative, have a look at [cronic][3].
 

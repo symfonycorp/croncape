@@ -4,9 +4,9 @@ Croncape
 Croncape wraps commands run as cron jobs to send emails **only** when an error
 or a timeout has occurred.
 
-Out of the box, crontab can send an email when a job generates output. But a
-command is not necessarily unsuccessful "just" because it used the standard or
-error output. Checking the exit code would be better, but that's not how
+Out of the box, crontab can send an email when a job [generates output][5]. But
+a command is not necessarily unsuccessful "just" because it used the standard
+or error output. Checking the exit code would be better, but that's not how
 crontab was [standardized][1].
 
 Croncape takes a different approach by wrapping your commands to only send an
@@ -68,3 +68,4 @@ For a simpler alternative, have a look at [cronic][3].
 [2]: https://pypi.python.org/pypi/cronwrap/1.4
 [3]: http://habilis.net/cronic/
 [4]: https://github.com/sensiocloud/croncape/releases
+[5]: https://xkcd.com/1728/

@@ -43,10 +43,17 @@ func main() {
 		emails: os.Getenv("MAILTO"),
 	}
 
+	var versionf bool
 	flag.DurationVar(&req.timeout, "t", 0, `Timeout for the command, like "-t 2h", "-t 2m", or "-t 30s". After the timeout, the command is killed, disabled by default`)
 	flag.StringVar(&req.transport, "p", "auto", `Transport to use, like "-p auto", "-p mail", "-p sendmail"`)
 	flag.BoolVar(&req.verbose, "v", false, "Enable sending emails even if command is successful")
+	flag.BoolVar(&versionf, "version", false, "Output the version")
 	flag.Parse()
+
+	if versionf {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 
 	req.command = flag.Args()
 	if len(req.command) == 0 {
@@ -164,6 +171,8 @@ func (r *result) sendEmail() {
 		}
 		cmd := exec.Command(transportPath, "-t")
 		cmd.Stdin = strings.NewReader(message)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 		cmd.Env = os.Environ()
 		if err := cmd.Run(); err != nil {
 			fmt.Printf("Could not send email to %s: %s\n", emails, err)

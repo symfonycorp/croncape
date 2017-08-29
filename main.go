@@ -77,7 +77,7 @@ func execCmd(path string, req request) result {
 		started: time.Now(),
 		request: req,
 	}
-	cmd := exec.Command(req.command[0], req.command[1:]...)
+	cmd := exec.Command("/bin/sh", "-c", strings.Join(req.command, " "))
 	cmd.Dir = path
 	cmd.Stdout = &r.stdout
 	cmd.Stderr = &r.stderr

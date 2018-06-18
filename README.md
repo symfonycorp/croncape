@@ -19,7 +19,7 @@ which case crontab would send you an email.
 Installation
 ------------
 
-Download the [binaries][4] or `go get github.com/sensiocloud/croncape`.
+Download the [binaries][4] or `go get github.com/symfonycorp/croncape`.
 
 Usage
 -----
@@ -67,5 +67,5 @@ For a simpler alternative, have a look at [cronic][3].
 [1]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html
 [2]: https://pypi.python.org/pypi/cronwrap/1.4
 [3]: http://habilis.net/cronic/
-[4]: https://github.com/sensiocloud/croncape/releases
+[4]: https://github.com/symfonycorp/croncape/releases
 [5]: https://xkcd.com/1728/

@@ -122,12 +122,12 @@ func execCmd(path string, req request) result {
 	if req.write != "" || req.append  != "" {
 		
 		if req.write != "" {
-			err := ioutil.WriteFile("temp.txt", r.stdout.Bytes(), 0644)
+			err := ioutil.WriteFile(req.write, r.stdout.Bytes(), 0644)
 			if err != nil {
 				log.Fatalln(err)
 			}
 		} else {
-			file, err := os.OpenFile("temp.txt", os.O_APPEND|os.O_WRONLY, 0644)
+			file, err := os.OpenFile(req.append, os.O_APPEND|os.O_WRONLY, 0644)
 			if err != nil {
 				log.Fatalln(err)
 			}

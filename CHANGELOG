@@ -1,7 +1,8 @@
 1.3.0
 -----
 
- * Allow to set email sender
+ * Allow to change the hostname used to send emails (via `MAILHOST` env var)
+ * Allow to set email sender (via `MAILFROM` env var)
  * Fix timeout support when the command starts sub-processes
  * Add go.mod
 

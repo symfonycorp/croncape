@@ -15,7 +15,7 @@ import (
 	"github.com/symfonycorp/croncape/process"
 )
 
-var version = "master"
+var version = "dev"
 
 type request struct {
 	command   []string

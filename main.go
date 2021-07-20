@@ -191,8 +191,11 @@ func (r *result) sendEmail() {
 }
 
 func (r *result) subject() string {
-	hostname, err := os.Hostname()
-	if err != nil {
+	hostname := "undefined"
+	var err error
+	if env := os.Getenv("MAILHOST"); env != "" {
+		hostname = env
+	} else if hostname, err = os.Hostname(); err != nil {
 		hostname = "undefined"
 	}
 

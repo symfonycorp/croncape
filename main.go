@@ -20,6 +20,7 @@ var version = "master"
 type request struct {
 	command   []string
 	emails    string
+	from      string
 	timeout   time.Duration
 	transport string
 	verbose   bool
@@ -43,6 +44,7 @@ func main() {
 
 	req := request{
 		emails: os.Getenv("MAILTO"),
+		from:   os.Getenv("MAILFROM"),
 	}
 
 	var versionf bool
@@ -145,14 +147,19 @@ func (r *result) sendEmail() {
 		}
 	}
 
-	if transportType == "" {
+	switch transportType {
+	default:
 		fmt.Printf("Unable to find a path for %s\n", r.request.transport)
 		os.Exit(1)
-	}
 
-	if transportType == "mail" {
+	case "mail":
 		for _, email := range emails {
-			cmd := exec.Command(transportPath, "-s", r.subject(), strings.TrimSpace(email))
+			args := []string{"-s", r.subject()}
+			if from := r.request.from; from != "" {
+				args = append(args, "-a", from)
+			}
+			args = append(args, strings.TrimSpace(email))
+			cmd := exec.Command(transportPath, args...)
 			cmd.Stdin = r.render()
 			cmd.Env = os.Environ()
 			if err := cmd.Run(); err != nil {
@@ -160,15 +167,16 @@ func (r *result) sendEmail() {
 				os.Exit(1)
 			}
 		}
-		return
-	}
 
-	if transportType == "sendmail" {
+	case "sendmail":
 		var message string
 		if len(emails) > 1 {
 			message = fmt.Sprintf("To: %s\r\nCc: %s\r\nSubject: %s\r\n\r\n%s", emails[0], strings.Join(emails[1:], ","), r.subject(), r.render().String())
 		} else {
 			message = fmt.Sprintf("To: %s\r\nSubject: %s\r\n\r\n%s", emails[0], r.subject(), r.render().String())
+		}
+		if from := r.request.from; from != "" {
+			message = fmt.Sprintf("From: %s\r\n%s", from, message)
 		}
 		cmd := exec.Command(transportPath, "-t")
 		cmd.Stdin = strings.NewReader(message)
@@ -179,7 +187,6 @@ func (r *result) sendEmail() {
 			fmt.Printf("Could not send email to %s: %s\n", emails, err)
 			os.Exit(1)
 		}
-		return
 	}
 }
 

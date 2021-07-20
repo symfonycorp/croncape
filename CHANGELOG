@@ -1,8 +1,9 @@
 1.3.0
 -----
 
- * Add go.mod
+ * Allow to set email sender
  * Fix timeout support when the command starts sub-processes
+ * Add go.mod
 
 1.2.0
 -----

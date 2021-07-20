@@ -34,6 +34,9 @@ That's it!
 Note that the `MAILTO` environment variable can also be defined globally in
 `/etc/crontab`; it supports multiple recipients by separating them with a comma.
 
+You can also customize the email sender by setting the `MAILFROM` environment
+variable.
+
 If you need to use "special" shell characters in your command (like `;` or `|`),
 don't forget to quote it:
 

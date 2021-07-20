@@ -11,6 +11,8 @@ import (
 	"syscall"
 	"text/template"
 	"time"
+
+	"github.com/symfonycorp/croncape/process"
 )
 
 var version = "master"
@@ -82,6 +84,8 @@ func execCmd(path string, req request) result {
 	cmd.Stdout = &r.stdout
 	cmd.Stderr = &r.stderr
 	cmd.Env = os.Environ()
+	cmd.SysProcAttr = &syscall.SysProcAttr{}
+	process.Deathsig(cmd.SysProcAttr)
 	if err := cmd.Start(); err != nil {
 		r.stderr.WriteString("\n" + err.Error() + "\n")
 		r.code = 127
@@ -89,21 +93,18 @@ func execCmd(path string, req request) result {
 		var timer *time.Timer
 		if req.timeout > 0 {
 			timer = time.NewTimer(req.timeout)
+			defer timer.Stop()
 			go func(timer *time.Timer, cmd *exec.Cmd) {
-				for _ = range timer.C {
+				for range timer.C {
 					r.killed = true
-					if err := cmd.Process.Kill(); err != nil {
+					if err := process.Kill(cmd); err != nil {
 						r.stderr.WriteString(fmt.Sprintf("\nUnabled to kill the process: %s\n", err))
 					}
 				}
 			}(timer, cmd)
 		}
 
-		err := cmd.Wait()
-		if req.timeout > 0 {
-			timer.Stop()
-		}
-		if err != nil {
+		if err := cmd.Wait(); err != nil {
 			// unsuccessful exit code?
 			r.code = -1
 			if exitError, ok := err.(*exec.ExitError); ok {

@@ -2,6 +2,7 @@
 -----
 
  * Add go.mod
+ * Fix timeout support when the command starts sub-processes
 
 1.2.0
 -----

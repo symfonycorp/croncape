@@ -19,7 +19,7 @@ which case crontab would send you an email.
 Installation
 ------------
 
-Download the [binaries][4] or `go get github.com/symfonycorp/croncape`.
+Download the [binaries][4] or `go install github.com/symfonycorp/croncape@latest`.
 
 Usage
 -----

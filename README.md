@@ -38,9 +38,9 @@ You can also customize the email sender by setting the `MAILFROM` environment
 variable.
 
 If you need to use "special" shell characters in your command (like `;` or `|`),
-don't forget to quote it:
+don't forget to quote it and wrap the command in a shell:
 
-    0 6 * * * croncape "ls -lsa | true"
+    0 6 * * * croncape bash -c "ls -lsa | true"
 
 Besides sending emails, croncape can also kill the run command after a given
 timeout, via the `-t` flag (disabled by default):

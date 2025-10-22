@@ -126,13 +126,14 @@ func (r *result) sendEmail() {
 	emails := strings.Split(r.request.emails, ",")
 	paths := make(map[string]string)
 
-	if r.request.transport == "auto" {
+	switch r.request.transport {
+	case "auto":
 		paths = map[string]string{"sendmail": "sendmail", "/usr/sbin/sendmail": "sendmail", "mail": "mail", "/usr/bin/mail": "mail"}
-	} else if r.request.transport == "sendmail" {
+	case "sendmail":
 		paths = map[string]string{"sendmail": "sendmail", "/usr/sbin/sendmail": "sendmail"}
-	} else if r.request.transport == "mail" {
+	case "mail":
 		paths = map[string]string{"mail": "mail", "/usr/bin/mail": "mail"}
-	} else {
+	default:
 		fmt.Printf("Unsupported transport %s\n", r.request.transport)
 		os.Exit(1)
 	}

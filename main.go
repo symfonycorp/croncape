@@ -74,6 +74,8 @@ func main() {
 			r.sendEmail()
 		}
 	}
+
+	os.Exit(r.code)
 }
 
 func execCmd(path string, req request) result {
